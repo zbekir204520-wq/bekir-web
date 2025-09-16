@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bekir'in Web Asistanı</title>
+  <meta name="theme-color" content="#1e1e1e" />
+  <style>
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #222, #444);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+    .search-bar {
+      display: flex;
+      max-width: 400px;
+      width: 90%;
+      margin-bottom: 30px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 12px 16px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px 0 0 8px;
+      outline: none;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 1rem;
+      background-color: crimson;
+      color: white;
+      border: none;
+      border-radius: 0 8px 8px 0;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: darkred;
+    }
+    .playstore-btn img {
+      height: 60px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .playstore-btn img:hover {
+      transform: scale(1.05);
+    }
+    footer {
+      margin-top: 50px;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+    #asistan-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: crimson;
+      color: white;
+      padding: 14px 18px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 0 10px crimson;
+      user-select: none;
+      z-index: 9999;
+      transition: background-color 0.3s ease;
+    }
+    #asistan-btn:hover {
+      background-color: darkred;
+    }
+    #asistan-kutusu {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      width: 280px;
+      max-width: 90vw;
+      background: white;
+      color: black;
+      border-radius: 12px;
+      box-shadow: 0 0 15px #0006;
+      padding: 20px;
+      font-size: 1rem;
+      display: none;
+      z-index: 9998;
+    }
+    #asistan-kutusu p {
+      margin-bottom: 15px;
+    }
+    #asistan-kutusu a {
+      display: inline-block;
+      text-decoration: none;
+      color: crimson;
+      font-weight: bold;
+      border: 2px solid crimson;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    #asistan-kutusu a:hover {
+      background-color: crimson;
+      color: white;
+    }
+    iframe[src*="ads"], div[class*="sponsor"], div[id*="ad"] {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bekir'in Web Asistanı</h1>
+  <div class="search-bar">
+    <input id="arama-input" type="text" placeholder="Bir şeyler arayın..." />
+    <button onclick="googleAra()">Ara</button>
+  </div>
+  <div class="playstore-btn">
+    <a href="https://play.google.com/store/apps/details?id=com.ornek.app" target="_blank" rel="noopener noreferrer">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play'den İndir" />
+    </a>
+  </div>
+  <footer>© 2025 Bekir</footer>
+
+  <div id="asistan-btn" onclick="asistanAcKapa()">💬 Yardım?</div>
+
+  <div id="asistan-kutusu">
+    <p>Merhaba! Size nasıl yardımcı olabilirim?</p>
+    <a href="mailto:bekir@example.com" target="_blank" rel="noopener noreferrer">Bana Ulaş</a>
+  </div>
+
+  <script>
+    // Arama fonksiyonu
+    function googleAra() {
+      const query = document.getElementById('arama-input').value.trim();
+      if (query) {
+        const url = 'https://www.google.com/search?q=' + encodeURIComponent(query);
+        window.open(url, '_blank');
+      }
+    }
+
+    // Asistan aç/kapa
+    function asistanAcKapa() {
+      const kutu = document.getElementById('asistan-kutusu');
+      if (kutu.style.display === 'block') {
+        kutu.style.display = 'none';
+      } else {
+        kutu.style.display = 'block';
+      }
+    }
+
+    // PWA için manifest.json içeriği
+    const manifestContent = {
+      "name": "Bekir'in Web Asistanı",
+      "short_name": "BekirAsistan",
+      "start_url": "./index.html",
+      "display": "standalone",
+      "background_color": "#222222",
+      "theme_color": "#b22222",
+      "description": "Bekir'in kişisel web asistanı ve arama sayfası",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+        {
+          "src": "icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    };
+
+    // Manifest oluşturma ve bağlama
+    function initializeManifest() {
+      const manifestJSON = JSON.stringify(manifestContent);
+      const blob = new Blob([manifestJSON], {type: 'application/json'});
+      const manifestURL = URL.createObjectURL(blob);
+      
+      const link = document.createElement('link');
+      link.rel = 'manifest';
+      link.href = manifestURL;
+      document.head.appendChild(link);
+    }
+
+    // Service Worker kaydı
+    function registerServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        const serviceWorkerScript = `
+          const CACHE_NAME = 'bekir-cache-v1';
+          const urlsToCache = [
+            './',
+            './index.html',
+            'https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg'
+          ];
+
+          self.addEventListener('install', event => {
+            event.waitUntil(
+              caches.open(CACHE_NAME)
+                .then(cache => cache.addAll(urlsToCache))
+            );
+          });
+
+          self.addEventListener('activate', event => {
+            event.waitUntil(
+              caches.keys()
+                .then(keys => Promise.all(
+                  keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+                ))
+            );
+          });
+
+          self.addEventListener('fetch', event => {
+            event.respondWith(
+              caches.match(event.request)
+                .then(response => response || fetch(event.request))
+            );
+          });
+        `;
+
+        const blob = new Blob([serviceWorkerScript], { type: 'application/javascript' });
+        const swURL = URL.createObjectURL(blob);
+
+        navigator.serviceWorker.register(swURL)
+          .then(reg => console.log('Service Worker kayıt oldu:', reg.scope))
+          .catch(err => console.log('Service Worker kayıt hatası:', err));
+      }
+    }
+
+    // Sayfa yüklendiğinde manifest ve service worker'ı başlat
+    window.addEventListener('load', () => {
+      initializeManifest();
+      registerServiceWorker();
+    });
+  </script>
+</body>
+</html>
